@@ -35,13 +35,15 @@ jar {
     }
 }
 
+
 task runJar(dependsOn:jar) << {
     javaexec {
+        standardInput = System.in
         main="-jar";
         args = [
                 "build/libs/solution.voteCounting-1.0-SNAPSHOT.jar",
                 "-c",
-                "candidateDetails?suite&format=text"
+                "src/main/resources/Candidates.txt"
         ]
     }
 }
