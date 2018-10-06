@@ -1,5 +1,5 @@
 # VoteCounting
-An application for paper ballot based vote counting
+An application for simulating paper ballot based vote counting
 
 How to build and run
 1. build 
