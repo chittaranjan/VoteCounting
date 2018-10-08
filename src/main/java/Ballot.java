@@ -88,8 +88,8 @@ public class Ballot {
     public String toString() {
         return "Ballot{" +
                 "candidates=" + candidates +
-                ", isValid=" + isValid +
-                ", isExhausted=" + isExhausted +
+                //", isValid=" + isValid +
+                //", isExhausted=" + isExhausted +
                 "}\n";
     }
 }

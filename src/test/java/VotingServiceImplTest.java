@@ -23,19 +23,41 @@ public class VotingServiceImplTest extends VotingCountBaseTest {
         ballots.forEach(ballot -> {
             votingService.castVote(ballot);
         });
+        votingService.countVotes();
         Assert.assertEquals(5, votingService.getCurrentQuota());
     }
 
     @Test
-    public void countVotesTest() {
+    public void eliminationOfCandidateWithMinimumVoteTest() {
         ballots.forEach(ballot -> {
             votingService.castVote(ballot);
         });
-        //votingService.countVotes();
+
+        Assert.assertEquals('A', ((Candidate)votingService.countVotes().getCandidatesEliminated().toArray()[0]).getOption().charValue());
+
+        Assert.assertEquals('D', ((Candidate)votingService.countVotes().getCandidatesEliminated().toArray()[0]).getOption().charValue());
+
+    }
+
+    @Test
+    public void countAndFindResultTest() {
+        ballots.forEach(ballot -> {
+            votingService.castVote(ballot);
+        });
+
+        //First Round
+        votingService.countVotes();
+        //Second Round
+        votingService.countVotes();
+        //3rd Round
+        Result result = votingService.countVotes();
+        Assert.assertEquals(4, result.getQuotaRequiredToWin());
+        Assert.assertEquals('B', result.getWinner().getOption().charValue());
     }
 
     @After
     public void tearDown() throws Exception {
+        ballots.clear();
         ballots = null;
     }
 

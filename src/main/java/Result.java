@@ -1,20 +1,36 @@
 import java.util.Map;
+import java.util.Set;
 
 public class Result {
-    private Candidate candidate;
+    private Set<Candidate> candidatesEliminated;
+    private Candidate winner;
     private int quotaRequiredToWin;
     private Map<Character, Integer> currentVoteCount;
     private boolean isEliminated;
     private boolean isWinner;
 
-    public Result(Candidate candidate, int quotaRequiredToWin, Map<Character, Integer> currentVoteCount) {
-        this.candidate = candidate;
+    public Set<Candidate> getCandidatesEliminated() {
+        return candidatesEliminated;
+    }
+
+    public void setCandidatesEliminated(Set<Candidate> candidatesEliminated) {
+        this.candidatesEliminated = candidatesEliminated;
+    }
+
+    public void setWinner(Candidate winner) {
+        this.winner = winner;
+    }
+
+    public void setQuotaRequiredToWin(int quotaRequiredToWin) {
         this.quotaRequiredToWin = quotaRequiredToWin;
+    }
+
+    public void setCurrentVoteCount(Map<Character, Integer> currentVoteCount) {
         this.currentVoteCount = currentVoteCount;
     }
 
-    public Candidate getCandidate() {
-        return candidate;
+    public Candidate getWinner() {
+        return winner;
     }
 
     public int getQuotaRequiredToWin() {

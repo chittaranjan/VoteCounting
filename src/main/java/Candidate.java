@@ -9,6 +9,7 @@ public class Candidate {
     private String name;
     private Character option;
     private int currentPreference = 0;
+    private boolean toBeEliminated;
 
 
     /**
@@ -42,7 +43,13 @@ public class Candidate {
         return currentPreference;
     }
 
+    public boolean isToBeEliminated() {
+        return toBeEliminated;
+    }
 
+    public void setToBeEliminated(boolean toBeEliminated) {
+        this.toBeEliminated = toBeEliminated;
+    }
 
     @Override
     public int hashCode() {
@@ -63,7 +70,9 @@ public class Candidate {
 
     @Override
     public String toString() {
-        return "[" + this.option + " - "+ this. name+ "-" + this.currentPreference +"]";
+        return "[" + this.option + " - "+
+                //this. name+ "-" +
+                this.currentPreference +"]";
     }
 
     public static Candidate getCandidateUsingOption(Character option) {
