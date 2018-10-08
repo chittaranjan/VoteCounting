@@ -8,7 +8,8 @@ import java.util.Objects;
 public class Candidate {
     private String name;
     private Character option;
-    private int voteCount = 0;
+    private int currentPreference = 0;
+
 
     /**
      * A local cache to look for name of the candidate using the option
@@ -29,13 +30,19 @@ public class Candidate {
         return option;
     }
 
-    public void setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
+    public void setCurrentPreference(int currentPreference) {
+        this.currentPreference = currentPreference;
     }
 
-    public int getVoteCount() {
-        return voteCount;
+    public void reOrderPreference() {
+        this.currentPreference--;
     }
+
+    public int getCurrentPreference() {
+        return currentPreference;
+    }
+
+
 
     @Override
     public int hashCode() {
@@ -56,7 +63,7 @@ public class Candidate {
 
     @Override
     public String toString() {
-        return "[" + this.option + " - "+ this. name+ "-" + this.voteCount +"]";
+        return "[" + this.option + " - "+ this. name+ "-" + this.currentPreference +"]";
     }
 
     public static Candidate getCandidateUsingOption(Character option) {

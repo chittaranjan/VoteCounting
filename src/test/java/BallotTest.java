@@ -50,6 +50,23 @@ public class BallotTest {
         Assert.assertFalse(ballot.isValid());
     }
 
+    @Test
+    public void reOrderCandidatePreferenceTest() {
+        Set<Candidate> candidates = ballot.getCandidates();
+        Map<Character, Integer> vote = new HashMap<>();
+        vote.put('A', 1);
+        vote.put('B', 2);
+        ballot.setVotePreference(vote);
+        Assert.assertTrue(ballot.isValid());
+        ballot.reOrderPreferences();
+        Assert.assertTrue(ballot.isValid());
+        Set<Candidate> candidateSet = ballot.getCandidates();
+        Candidate candidateA = candidates.stream().filter(candidate -> candidate.getOption().equals('A')).findFirst().get();
+        Assert.assertEquals(0, candidateA.getCurrentPreference());
+        Candidate candidateB = candidates.stream().filter(candidate -> candidate.getOption().equals('B')).findFirst().get();
+        Assert.assertEquals(1, candidateB.getCurrentPreference());
+    }
+
     private Set<Candidate> generateCandidates(int number) {
         Set<Candidate> candidates = new HashSet<>();
         char option = 'A';

@@ -18,8 +18,13 @@ public class Ballot {
         return candidates;
     }
 
-    public Map<Character, Integer> getVotePreference() {
-        return Collections.emptyMap();
+    /**
+     * Moves the current preference up by 1
+     */
+    public void reOrderPreferences() {
+        candidates.stream()
+                .filter(candidate -> candidate.getCurrentPreference() > 0)
+                .forEach(candidate -> candidate.reOrderPreference());
     }
 
     /**
@@ -37,7 +42,7 @@ public class Ballot {
             Optional<Candidate> candidateOptional = candidates.stream().filter(candidate1 -> candidate1.getOption().equals(entry.getKey())).findAny();
             if (candidateOptional.isPresent()) {
                 Candidate candidate = candidateOptional.get();
-                candidate.setVoteCount(entry.getValue());
+                candidate.setCurrentPreference(entry.getValue());
             } else {
                 isValid = false;
             }

@@ -26,6 +26,14 @@ public class VotingServiceImplTest extends VotingCountBaseTest {
         Assert.assertEquals(5, votingService.getCurrentQuota());
     }
 
+    @Test
+    public void countVotesTest() {
+        ballots.forEach(ballot -> {
+            votingService.castVote(ballot);
+        });
+        //votingService.countVotes();
+    }
+
     @After
     public void tearDown() throws Exception {
         ballots = null;

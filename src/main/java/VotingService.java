@@ -3,7 +3,7 @@
  */
 public interface VotingService {
     void castVote(Ballot ballot);
-    void countVotes();
+    Result countVotes();
     int getCurrentQuota();
     Candidate getWinner();
 }
