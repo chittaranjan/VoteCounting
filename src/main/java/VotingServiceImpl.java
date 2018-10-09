@@ -27,7 +27,6 @@ public class VotingServiceImpl implements VotingService {
 
     @Override
     public void castVote(Ballot ballot) {
-        System.out.println("Casted"+ ballot);
         if (null == this.ballots) {
             this.ballots = new ArrayList<>();
         }
@@ -64,7 +63,10 @@ public class VotingServiceImpl implements VotingService {
 
     private boolean checkCurrentQuotaAndReallocate() {
 
-        //Compute the vote cunts
+        System.out.println(validBallots);
+
+
+        //Compute the vote counts
         Map<Character, Integer> voteCounts = validBallots
                 .entrySet()
                 .stream()
@@ -178,6 +180,6 @@ public class VotingServiceImpl implements VotingService {
                 updateCurrentQuota();
             }
         });
-        System.out.println(validBallots);
+
     }
 }

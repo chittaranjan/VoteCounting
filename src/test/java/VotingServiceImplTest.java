@@ -47,15 +47,22 @@ public class VotingServiceImplTest extends VotingCountBaseTest {
 
         //First Round
         Result resultAfterFirstRound = votingService.countVotes();
-        System.out.println(resultAfterFirstRound);
         //Second Round
         Result resultAfterSecondRound = votingService.countVotes();
-        System.out.println(resultAfterSecondRound);
         //3rd Round
         Result result = votingService.countVotes();
-        System.out.println(result);
         Assert.assertEquals(4, result.getQuotaRequiredToWin());
         Assert.assertEquals('B', result.getWinner().getOption().charValue());
+    }
+
+    @Test
+    public void allCandidatesEliminatedTest() {
+        //ToDo check currentQuota when all candidates are eliminated
+    }
+
+    @Test
+    public void multipleCandidatesHavingSameNumberOfVotesButLessThanQuotaTest() {
+        //ToDo Need to check the scenario
     }
 
     @After

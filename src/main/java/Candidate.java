@@ -51,6 +51,12 @@ public class Candidate {
         this.toBeEliminated = toBeEliminated;
     }
 
+    public Candidate clone() {
+        Candidate candidate = new Candidate(this.option, this.name);
+        candidate.currentPreference = this.currentPreference;
+        return candidate;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(this.name, this.option);
