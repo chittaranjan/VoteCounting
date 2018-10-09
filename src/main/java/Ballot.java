@@ -35,6 +35,7 @@ public class Ballot {
      * e.g. <A, 1>
      */
     public void setVotePreference(Map<Character, Integer> votePreference) {
+        System.out.println(votePreference);
         if (!isValidPreferenceSet(votePreference.values())) {
             isValid = false;
         }
@@ -48,6 +49,7 @@ public class Ballot {
             }
 
         }
+        System.out.println(candidates);
     }
 
     public boolean isValid() {

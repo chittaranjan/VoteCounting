@@ -57,4 +57,15 @@ public class Result {
         isWinner = winner;
     }
 
+    @Override
+    public String toString() {
+        return "Result{" +
+                "candidatesEliminated=" + candidatesEliminated +
+                ", winner=" + winner +
+                ", quotaRequiredToWin=" + quotaRequiredToWin +
+                ", currentVoteCount=" + currentVoteCount +
+                ", isEliminated=" + isEliminated +
+                ", isWinner=" + isWinner +
+                '}';
+    }
 }

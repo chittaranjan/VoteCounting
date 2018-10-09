@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 public class Solution {
 
     public static void main(String... args) {
-        System.out.println(args[1]);
         VotingService votingService = new VotingServiceImpl();
         Scanner input = null;
         if (0 < args.length) {
@@ -23,7 +22,7 @@ public class Solution {
         }
 
         char option = 'A';
-        Set<Candidate> candidates = new HashSet<>();
+        Set<Candidate> candidates = new LinkedHashSet<>();
         while(input.hasNext()){
             String candidateName = input.nextLine();
             Candidate candidate = new Candidate(option++, candidateName);
@@ -34,8 +33,9 @@ public class Solution {
 
         Scanner in = new Scanner(System.in);
         String userEntry = null;
-        Map<Character, Integer> preference = new HashMap<>();
         while (userEntry == null || !userEntry.equals("tally")) {
+
+            System.out.print(">");
 
             userEntry = in.nextLine();
             if (userEntry.isEmpty()) {
@@ -50,19 +50,27 @@ public class Solution {
                 options.removeIf(optionToValidate -> !availableOptions.contains(optionToValidate));
             }
 
+            Map<Character, Integer> preference = new HashMap<>();
             if (options.size() > 0) {
                 int preferenceOrder = 0;
                 for (Character optionToMap : options) {
                     preference.put(optionToMap, new Integer(++preferenceOrder));
                 }
-                Ballot ballot = new Ballot(candidates);
+
+                Set<Candidate> candidateSet = new LinkedHashSet<>();
+                candidateSet.addAll(candidates);
+
+                Ballot ballot = new Ballot(candidateSet);
                 ballot.setVotePreference(preference);
+
+
                 votingService.castVote(ballot);
             }
         }
 
         if (userEntry.equals("tally")) {
             Result result = votingService.countVotes();
+            System.out.println(result);
             while (result.getWinner() == null) {
                 result = votingService.countVotes();
                 System.out.println("Current vote count: " + result.getCurrentVoteCount());

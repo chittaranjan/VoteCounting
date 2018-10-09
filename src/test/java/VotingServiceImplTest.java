@@ -46,11 +46,14 @@ public class VotingServiceImplTest extends VotingCountBaseTest {
         });
 
         //First Round
-        votingService.countVotes();
+        Result resultAfterFirstRound = votingService.countVotes();
+        System.out.println(resultAfterFirstRound);
         //Second Round
-        votingService.countVotes();
+        Result resultAfterSecondRound = votingService.countVotes();
+        System.out.println(resultAfterSecondRound);
         //3rd Round
         Result result = votingService.countVotes();
+        System.out.println(result);
         Assert.assertEquals(4, result.getQuotaRequiredToWin());
         Assert.assertEquals('B', result.getWinner().getOption().charValue());
     }

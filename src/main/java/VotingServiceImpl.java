@@ -27,6 +27,7 @@ public class VotingServiceImpl implements VotingService {
 
     @Override
     public void castVote(Ballot ballot) {
+        System.out.println("Casted"+ ballot);
         if (null == this.ballots) {
             this.ballots = new ArrayList<>();
         }
@@ -37,7 +38,7 @@ public class VotingServiceImpl implements VotingService {
     @Override
     public Result countVotes() {
         /**
-         * Performs rounds of counting until a winner is decided
+         * Perform a round of counting unless a winner is determined.
          *
          * At every round, candidate with least number of votes will be found and eliminated.
          * When candidate is eliminated, all the ballot papers that have been re-allocated to the next available preference on each of those ballot papers.
@@ -81,6 +82,10 @@ public class VotingServiceImpl implements VotingService {
 
         if (winners != null && winners.isEmpty() == false) {
             aWinnerIsDecided = true;
+            /**
+             * In case more than one candidate emerge out to be winner
+             * Need to select one randomly
+             */
             if (winners.size() > 1) {
                 int randomNumber = new Random().nextInt(winners.size());
                 winnerOption = (Character)winners.stream().toArray()[randomNumber];
@@ -116,10 +121,17 @@ public class VotingServiceImpl implements VotingService {
         return candidate;
     }
 
+    /**
+     * At every rounds of counting, candidates(s) with minimum number of votes are eliminated
+     * And ballots assigned to the candidate need to be reallocated.
+     *
+     * This method just reorder the preferences of candidates in the ballot
+     * before invoking the method to reallocate
+     * @param candidatesWithMinimumVote
+     */
     private void reAllocateBallots(Character candidatesWithMinimumVote) {
         List<Ballot> ballotsAssignedToCandidate = validBallots.get(candidatesWithMinimumVote);
         ballotsAssignedToCandidate.stream().forEach(ballot -> ballot.reOrderPreferences());
-
         allocateAccordingToPreference();
     }
 
@@ -129,10 +141,22 @@ public class VotingServiceImpl implements VotingService {
         return currentQuota;
     }
 
+    /**
+     * Calculates the current quota required to win using the formula
+     * (number of non-exhausted ballots / 2) + 1
+     * At any point of time, sum of ballots in the validBallots map determines the number of non-exhausted votes
+     */
     private void updateCurrentQuota() {
         currentQuota = ((validBallots.values().stream().flatMapToInt(value -> IntStream.of(value.size())).sum())/2) +1;
     }
 
+    /**
+     * Allocates the ballot to the candidate,
+     * according to the highest preference to the candidate in each ballot
+     *
+     * if any candidate is eliminated in previous rounds of counting
+     * the ballot is considered to be exhausted and  no need to allocate the ballot to the candidate
+     */
     private void allocateAccordingToPreference() {
         validBallots.clear();
         validBallots = new HashMap<>();
@@ -147,11 +171,13 @@ public class VotingServiceImpl implements VotingService {
 
                 validBallots.computeIfAbsent(candidate.getOption(), ballotList -> new ArrayList<>())
                         .add(ballot);
+                //Exhausted ballot; Remove form the validBallots
                 if (candidatesEliminated.contains(candidate)) {
                     validBallots.remove(candidate.getOption());
                 }
                 updateCurrentQuota();
             }
         });
+        System.out.println(validBallots);
     }
 }
