@@ -9,8 +9,6 @@ public class Candidate {
     private String name;
     private Character option;
     private int currentPreference = 0;
-    private boolean toBeEliminated;
-
 
     /**
      * A local cache to look for name of the candidate using the option
@@ -43,14 +41,6 @@ public class Candidate {
         return currentPreference;
     }
 
-    public boolean isToBeEliminated() {
-        return toBeEliminated;
-    }
-
-    public void setToBeEliminated(boolean toBeEliminated) {
-        this.toBeEliminated = toBeEliminated;
-    }
-
     public Candidate clone() {
         Candidate candidate = new Candidate(this.option, this.name);
         candidate.currentPreference = this.currentPreference;
@@ -77,7 +67,7 @@ public class Candidate {
     @Override
     public String toString() {
         return "[" + this.option + " - "+
-                //this. name+ "-" +
+                this. name+ "-" +
                 this.currentPreference +"]";
     }
 

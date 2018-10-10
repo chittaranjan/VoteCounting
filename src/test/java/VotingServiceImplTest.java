@@ -32,10 +32,11 @@ public class VotingServiceImplTest extends VotingCountBaseTest {
         ballots.forEach(ballot -> {
             votingService.castVote(ballot);
         });
-
-        Assert.assertEquals('A', ((Candidate)votingService.countVotes().getCandidatesEliminated().toArray()[0]).getOption().charValue());
-        Assert.assertEquals('D', ((Candidate)votingService.countVotes().getCandidatesEliminated().toArray()[0]).getOption().charValue());
-
+        Result resultAfterFirstRound = votingService.countVotes();
+        Assert.assertEquals(null, resultAfterFirstRound.getWinner());
+        Assert.assertTrue(resultAfterFirstRound.getCandidatesEliminated().isEmpty());
+        Result resultAfterSecondRound = votingService.countVotes();
+        Assert.assertEquals('A', ((Candidate)resultAfterSecondRound.getCandidatesEliminated().toArray()[0]).getOption().charValue());
     }
 
     @Test
@@ -46,12 +47,15 @@ public class VotingServiceImplTest extends VotingCountBaseTest {
 
         //First Round
         Result resultAfterFirstRound = votingService.countVotes();
+        System.out.println(resultAfterFirstRound);
         //Second Round
         Result resultAfterSecondRound = votingService.countVotes();
+        System.out.println(resultAfterSecondRound);
         //3rd Round
-        Result result = votingService.countVotes();
-        Assert.assertEquals(4, result.getQuotaRequiredToWin());
-        Assert.assertEquals('B', result.getWinner().getOption().charValue());
+        Result resultAfterThirdRound = votingService.countVotes();
+        System.out.println(resultAfterThirdRound);
+        Assert.assertEquals(4, resultAfterThirdRound.getQuotaRequiredToWin());
+        Assert.assertEquals('B', resultAfterThirdRound.getWinner().getOption().charValue());
     }
 
     @Test
@@ -98,11 +102,11 @@ public class VotingServiceImplTest extends VotingCountBaseTest {
         }
 
         //First Round
-        Result resultAfterFirstRound = votingService.countVotes();
-        Assert.assertEquals('B', ((Candidate)resultAfterFirstRound.getCandidatesEliminated().toArray()[0]).getOption().charValue());
-        Assert.assertEquals('A', ((Candidate)resultAfterFirstRound.getCandidatesEliminated().toArray()[1]).getOption().charValue());
-        //Second Round
+        Result resultAfterFirstRound= votingService.countVotes();
+        System.out.println(resultAfterFirstRound);
+        //Second round
         Result resultAfterSecondRound = votingService.countVotes();
+        System.out.println(resultAfterSecondRound);
         Assert.assertEquals(2, resultAfterSecondRound.getQuotaRequiredToWin());
         Assert.assertEquals('D', resultAfterSecondRound.getWinner().getOption().charValue());
     }

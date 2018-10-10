@@ -18,11 +18,10 @@ public class VotingServiceImpl implements VotingService {
     private Map<Character, Integer> currentVoteCount;
 
     public VotingServiceImpl() {
-        //ToDo proper initialisation
         validBallots = new HashMap<>();
         currentVoteCount = new HashMap<>();
-        candidatesEliminatedAtCurrentRound = new HashSet<>();
-        candidatesEliminated = new HashSet<>();
+        candidatesEliminatedAtCurrentRound = new LinkedHashSet<>();
+        candidatesEliminated = new LinkedHashSet<>();
     }
 
     @Override
@@ -47,32 +46,44 @@ public class VotingServiceImpl implements VotingService {
         //First round of counting
         if (validBallots.isEmpty()) {
             allocateAccordingToPreference();
+            return getResultAtCurrentRound();
         }
+        //Else look for whether a winner is decided already
+        if (aWinnerIsDecided == true) {
+            //if the winner is already decided, then return the result immediately
+            return getResultAtCurrentRound();
+        }
+        //Else reallocate
+        checkCurrentQuotaAndReallocate();
+        return getResultAtCurrentRound();
+    }
+
+    private Result getResultAtCurrentRound() {
         Result resultAtThisRound = new Result();
         resultAtThisRound.setCurrentVoteCount(currentVoteCount);
         resultAtThisRound.setQuotaRequiredToWin(currentQuota);
+        resultAtThisRound.setCandidatesEliminated(candidatesEliminatedAtCurrentRound);
 
-        aWinnerIsDecided = checkCurrentQuotaAndReallocate();
-        if (!aWinnerIsDecided) {
-            resultAtThisRound.setCandidatesEliminated(candidatesEliminatedAtCurrentRound);
-            return  resultAtThisRound;
+        aWinnerIsDecided = isThereAWinnerYet();
+        if (aWinnerIsDecided) {
+            resultAtThisRound.setWinner(Candidate.getCandidateUsingOption(winnerOption));
         }
-        resultAtThisRound.setWinner(Candidate.getCandidateUsingOption(winnerOption));
-        return resultAtThisRound;
+        return  resultAtThisRound;
     }
 
-    private boolean checkCurrentQuotaAndReallocate() {
-
-
-
-        //Compute the vote counts
+    private Map<Character, Integer> getCurrentVoteCount() {
+        System.out.println(validBallots);
         Map<Character, Integer> voteCounts = validBallots
                 .entrySet()
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e-> e.getValue().size()));
+        return voteCounts;
+    }
+    private boolean isThereAWinnerYet(){
+        //Compute the vote counts
+        Map<Character, Integer> voteCounts = getCurrentVoteCount();
         currentVoteCount.clear();
         currentVoteCount.putAll(voteCounts);
-
 
         //Check if there is a winner already
         Set<Character> winners = voteCounts.entrySet()
@@ -89,31 +100,35 @@ public class VotingServiceImpl implements VotingService {
              */
             if (winners.size() > 1) {
                 int randomNumber = new Random().nextInt(winners.size());
-                winnerOption = (Character)winners.stream().toArray()[randomNumber];
+                winnerOption = (Character) winners.stream().toArray()[randomNumber];
 
             } else {
                 winnerOption = winners.stream().findFirst().get();
             }
             return true;
-        } else {
-            //Look for candidate with minimum vote
-            Optional<Integer> minimumPreferenceValue = voteCounts.values().stream().min(Integer::compare);
-            if (minimumPreferenceValue.isPresent()) {
-                Set<Candidate> candidatesWithMinimumVotes = voteCounts.entrySet()
-                        .stream()
-                        .filter(voteCount -> voteCount.getValue().equals(minimumPreferenceValue.get()))
-                        .map(this::getCandidateUsingVoteCount)
-                        .collect(Collectors.toSet());
-
-                candidatesWithMinimumVotes.stream().forEach(candidatesWithMinimumVote -> {
-                    reAllocateBallots(candidatesWithMinimumVote.getOption());
-                });
-                candidatesEliminated.addAll(candidatesWithMinimumVotes);
-                candidatesEliminatedAtCurrentRound.clear();
-                candidatesEliminatedAtCurrentRound.addAll(candidatesWithMinimumVotes);
-            }
         }
         return false;
+    }
+
+    /**
+     * ToDo add Javadoc
+     */
+    private void checkCurrentQuotaAndReallocate() {
+        Map<Character, Integer> voteCounts = getCurrentVoteCount();
+        Optional<Integer> minimumPreferenceValue = voteCounts.values().stream().min(Integer::compare);
+        if (minimumPreferenceValue.isPresent()) {
+            Set<Candidate> candidatesWithMinimumVotes = voteCounts.entrySet()
+                    .stream()
+                    .filter(voteCount -> voteCount.getValue().equals(minimumPreferenceValue.get()))
+                    .map(this::getCandidateUsingVoteCount)
+                    .collect(Collectors.toSet());
+            candidatesWithMinimumVotes.stream().forEach(candidatesWithMinimumVote -> {
+                reAllocateBallots(candidatesWithMinimumVote.getOption());
+            });
+            candidatesEliminated.addAll(candidatesWithMinimumVotes);
+            candidatesEliminatedAtCurrentRound.clear();
+            candidatesEliminatedAtCurrentRound.addAll(candidatesWithMinimumVotes);
+        }
     }
 
     private Candidate getCandidateUsingVoteCount(Map.Entry<Character, Integer> voteCount) {

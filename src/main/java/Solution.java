@@ -85,6 +85,7 @@ public class Solution {
                 System.out.println("-------- Round " + round++ + "---------");
 
                 result = votingService.countVotes();
+                System.out.println(result);
                 System.out.println("Current vote count: " + result.getCurrentVoteCount());
                 System.out.println("Quota required to win: "+ result.getQuotaRequiredToWin());
                 if (result.getWinner() == null) {
