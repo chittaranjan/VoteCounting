@@ -19,7 +19,7 @@ public class VotingServiceImplTest extends VotingCountBaseTest {
     }
 
     @Test
-    public void validBallotsTest() {
+    public void testValidBallotsAndCurrentQuotaAfterFirstRound() {
         ballots.forEach(ballot -> {
             votingService.castVote(ballot);
         });
@@ -34,13 +34,12 @@ public class VotingServiceImplTest extends VotingCountBaseTest {
         });
 
         Assert.assertEquals('A', ((Candidate)votingService.countVotes().getCandidatesEliminated().toArray()[0]).getOption().charValue());
-
         Assert.assertEquals('D', ((Candidate)votingService.countVotes().getCandidatesEliminated().toArray()[0]).getOption().charValue());
 
     }
 
     @Test
-    public void countAndFindResultTest() {
+    public void testUsualScenarioWithValidBallotsAndCountResult() {
         ballots.forEach(ballot -> {
             votingService.castVote(ballot);
         });
@@ -61,14 +60,58 @@ public class VotingServiceImplTest extends VotingCountBaseTest {
     }
 
     @Test
-    public void multipleCandidatesHavingSameNumberOfVotesButLessThanQuotaTest() {
-        //ToDo Need to check the scenario
+    public void testWhenThereIsATieWithFirstPreferenceDecideWinnerWithNextHigherPreference() {
+        /**
+         * test case to test a scenario when there is tie according to first preference in ballots
+         * the winner can be determined according to next higher preference
+         * e.g
+         * There are 2 ballots like below
+         * A D C
+         * B D C
+         *
+         * In this case, first preference in 2 ballots are A and B, since there is tie, winner could be D
+         *
+         */
+        Map<Character, String> candidates = generateCandidates();
+        for (int i = 0; i <2; i++) {
+            Set<Candidate> candidateSet = candidates
+                    .entrySet()
+                    .stream()
+                    .map(entry -> new Candidate(entry.getKey(), entry.getValue()))
+                    .collect(Collectors.toSet());
+            Ballot ballot = new Ballot(candidateSet);
+            /**
+             * Set preferences
+             */
+            Map<Character, Integer> preference = null;
+            if (i == 0) {
+                preference = Util.of('A', 1,
+                        'D', 2,
+                        'c', 3);
+            } else if (i == 1) {
+                preference = Util.of('B', 1,
+                        'D', 2,
+                        'C', 3);
+            }
+            ballot.setVotePreference(preference);
+            votingService.castVote(ballot);
+        }
+
+        //First Round
+        Result resultAfterFirstRound = votingService.countVotes();
+        Assert.assertEquals('B', ((Candidate)resultAfterFirstRound.getCandidatesEliminated().toArray()[0]).getOption().charValue());
+        Assert.assertEquals('A', ((Candidate)resultAfterFirstRound.getCandidatesEliminated().toArray()[1]).getOption().charValue());
+        //Second Round
+        Result resultAfterSecondRound = votingService.countVotes();
+        Assert.assertEquals(2, resultAfterSecondRound.getQuotaRequiredToWin());
+        Assert.assertEquals('D', resultAfterSecondRound.getWinner().getOption().charValue());
     }
 
     @After
     public void tearDown() throws Exception {
         ballots.clear();
         ballots = null;
+        votingService = null;
     }
 
     private List<Ballot> createBallots() {

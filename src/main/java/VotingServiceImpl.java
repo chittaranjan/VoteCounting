@@ -63,7 +63,6 @@ public class VotingServiceImpl implements VotingService {
 
     private boolean checkCurrentQuotaAndReallocate() {
 
-        System.out.println(validBallots);
 
 
         //Compute the vote counts
@@ -132,8 +131,10 @@ public class VotingServiceImpl implements VotingService {
      * @param candidatesWithMinimumVote
      */
     private void reAllocateBallots(Character candidatesWithMinimumVote) {
-        List<Ballot> ballotsAssignedToCandidate = validBallots.get(candidatesWithMinimumVote);
-        ballotsAssignedToCandidate.stream().forEach(ballot -> ballot.reOrderPreferences());
+        if (validBallots.containsKey(candidatesWithMinimumVote)) {
+            List<Ballot> ballotsAssignedToCandidate = validBallots.get(candidatesWithMinimumVote);
+            ballotsAssignedToCandidate.stream().forEach(ballot -> ballot.reOrderPreferences());
+        }
         allocateAccordingToPreference();
     }
 
@@ -173,6 +174,7 @@ public class VotingServiceImpl implements VotingService {
 
                 validBallots.computeIfAbsent(candidate.getOption(), ballotList -> new ArrayList<>())
                         .add(ballot);
+
                 //Exhausted ballot; Remove form the validBallots
                 if (candidatesEliminated.contains(candidate)) {
                     validBallots.remove(candidate.getOption());
@@ -180,6 +182,5 @@ public class VotingServiceImpl implements VotingService {
                 updateCurrentQuota();
             }
         });
-
     }
 }
