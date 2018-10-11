@@ -29,7 +29,9 @@ public class VotingServiceImpl implements VotingService {
         if (null == this.ballots) {
             this.ballots = new ArrayList<>();
         }
-        this.ballots.add(ballot);
+        if (ballot.isValid()) {
+            this.ballots.add(ballot);
+        }
     }
 
     @Override
@@ -158,12 +160,6 @@ public class VotingServiceImpl implements VotingService {
             ballotsAssignedToCandidate.stream().forEach(ballot -> ballot.reOrderPreferences());
         }
         allocateAccordingToPreference();
-    }
-
-
-    @Override
-    public int getCurrentQuota() {
-        return currentQuota;
     }
 
     /**

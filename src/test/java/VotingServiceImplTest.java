@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 
 public class VotingServiceImplTest extends VotingCountBaseTest {
     private List<Ballot> ballots;
-    VotingService votingService;
+    private VotingService votingService;
 
     @Before
     public void setUp() throws Exception {
@@ -24,12 +24,12 @@ public class VotingServiceImplTest extends VotingCountBaseTest {
         ballots.forEach(ballot -> {
             votingService.castVote(ballot);
         });
-        votingService.countVotes();
-        Assert.assertEquals(5, votingService.getCurrentQuota());
+        Result result = votingService.countVotes();
+        Assert.assertEquals(5, result.getQuotaRequiredToWin());
     }
 
     @Test
-    public void eliminationOfCandidateWithMinimumVoteTest() {
+    public void testEliminationOfCandidateWithMinimumVote() {
         ballots.forEach(ballot -> {
             votingService.castVote(ballot);
         });
