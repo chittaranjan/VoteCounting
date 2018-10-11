@@ -3,9 +3,9 @@ Preferential Vote counting System
 
 How to build and run
 
-1. To build and make jar 
+1. To build 
 
-./gradlew clean build jar
+./gradlew clean build
 
 2. Run the tests
 
