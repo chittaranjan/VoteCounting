@@ -1,6 +1,5 @@
 # VoteCounting
-An application for simulating paper ballot based vote counting.
-
+Preferential Vote counting System
 In a preferential vote counting system, voters are allowed to vote for more than one item so that they can also express a second, third, etc. preference in the event that their first preference is unelectable. In a paper based system, the votes (also called preferences) are written on a ballot paper by the voter. A voter is given an empty ballot paper with a list of the candidates (also called options) like this:
 
 A. Winery tour
@@ -30,75 +29,3 @@ gradlew clean build jar
 gradlew test
 3. Run the application
 gradlew runJar
-
-Sample run of the application with i/o
-
-$ ./gradlew runJar
-> Task :compileJava
-> Task :processResources UP-TO-DATE
-> Task :classes
-> Task :jar
-
-> Task :runJar
-A. Winery tour
-B. Ten pin bowling
-C. Movie night
-D. Museum visit
->A B D
->B C D
->A D C
->C D A
->D A B
->tally
-
-
-*************** Round 1****************
----------------------------------------
-Current vote count:
----------------------------------------
-Winery tour:2
-Ten pin bowling:1
-Movie night:1
-Museum visit:1
----------------------------------------
-Quota required to win: 3
----------------------------------------
-
-
-*************** Round 2****************
----------------------------------------
-Current vote count:
----------------------------------------
-Winery tour:2
-Ten pin bowling:1
-Museum visit:2
----------------------------------------
-Quota required to win: 3
----------------------------------------
-Candidate eliminated:Movie night
-
-
-*************** Round 3****************
----------------------------------------
-Current vote count:
----------------------------------------
-Winery tour:2
-Museum visit:2
----------------------------------------
-Quota required to win: 3
----------------------------------------
-Candidate eliminated:Ten pin bowling
-
-
-*************** Round 4****************
----------------------------------------
-Current vote count:
----------------------------------------
-Museum visit:3
----------------------------------------
-Quota required to win: 2
----------------------------------------
-Candidate eliminated:Winery tour
----------------------------------------
-Winner: Museum visit
-
