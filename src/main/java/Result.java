@@ -6,8 +6,6 @@ public class Result {
     private Candidate winner;
     private int quotaRequiredToWin;
     private Map<Character, Integer> currentVoteCount;
-    private boolean isEliminated;
-    private boolean isWinner;
 
     public Set<Candidate> getCandidatesEliminated() {
         return candidatesEliminated;
@@ -41,22 +39,6 @@ public class Result {
         return currentVoteCount;
     }
 
-    public boolean isEliminated() {
-        return isEliminated;
-    }
-
-    public boolean isWinner() {
-        return isWinner;
-    }
-
-    public void setEliminated(boolean eliminated) {
-        isEliminated = eliminated;
-    }
-
-    public void setWinner(boolean winner) {
-        isWinner = winner;
-    }
-
     @Override
     public String toString() {
         return "Result{" +
@@ -64,8 +46,6 @@ public class Result {
                 ", winner=" + winner +
                 ", quotaRequiredToWin=" + quotaRequiredToWin +
                 ", currentVoteCount=" + currentVoteCount +
-                ", isEliminated=" + isEliminated +
-                ", isWinner=" + isWinner +
                 '}';
     }
 }

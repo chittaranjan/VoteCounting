@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.Assert.*;
 
@@ -41,39 +42,49 @@ public class VotingServiceImplTest extends VotingCountBaseTest {
 
     @Test
     public void testUsualScenarioWithValidBallotsAndCountResult() {
+        /**
+         * tests an usual scenario
+         * verifies currentQuota to win, total number of non-exhausted votes and candidates eliminated and/or winner
+         * at every rounds of counting
+         */
+
         ballots.forEach(ballot -> {
             votingService.castVote(ballot);
         });
 
         //First Round
         Result resultAfterFirstRound = votingService.countVotes();
-        System.out.println(resultAfterFirstRound);
+        Assert.assertEquals(5, resultAfterFirstRound.getQuotaRequiredToWin());
+        Assert.assertEquals(8, resultAfterFirstRound.getCurrentVoteCount().values().stream().flatMapToInt(value -> IntStream.of(value.intValue())).sum());
+        Assert.assertTrue(resultAfterFirstRound.getCandidatesEliminated().isEmpty() && resultAfterFirstRound.getWinner() == null);
         //Second Round
         Result resultAfterSecondRound = votingService.countVotes();
-        System.out.println(resultAfterSecondRound);
+        Assert.assertEquals(5, resultAfterSecondRound.getQuotaRequiredToWin());
+        Assert.assertEquals(8, resultAfterSecondRound.getCurrentVoteCount().values().stream().flatMapToInt(value -> IntStream.of(value.intValue())).sum());
+        Assert.assertEquals('A', ((Candidate)resultAfterSecondRound.getCandidatesEliminated().toArray()[0]).getOption().charValue());
         //3rd Round
         Result resultAfterThirdRound = votingService.countVotes();
-        System.out.println(resultAfterThirdRound);
         Assert.assertEquals(4, resultAfterThirdRound.getQuotaRequiredToWin());
+        Assert.assertEquals(7, resultAfterThirdRound.getCurrentVoteCount().values().stream().flatMapToInt(value -> IntStream.of(value.intValue())).sum());
+        Assert.assertEquals('D', ((Candidate)resultAfterThirdRound.getCandidatesEliminated().toArray()[0]).getOption().charValue());
         Assert.assertEquals('B', resultAfterThirdRound.getWinner().getOption().charValue());
     }
 
-    @Test
-    public void allCandidatesEliminatedTest() {
-        //ToDo check currentQuota when all candidates are eliminated
-    }
 
     @Test
-    public void testWhenThereIsATieWithFirstPreferenceDecideWinnerWithNextHigherPreference() {
+    public void testEliminationOfCandidateAtRandomWhenThereAreMultipleLeadingCandidates() {
         /**
-         * test case to test a scenario when there is tie according to first preference in ballots
-         * the winner can be determined according to next higher preference
+         * test case to test a scenario when there is a tie between 2 or more leading candidates
+         * and there are no other candidates that can be eliminated
+         * One candidate should be chosen at random for elimination.
+         *
          * e.g
          * There are 2 ballots like below
          * A D C
          * B D C
          *
-         * In this case, first preference in 2 ballots are A and B, since there is tie, winner could be D
+         * In this case, first preference in 2 ballots are A and B,
+         * Either or A or B will be chosen at random to be eliminated
          *
          */
         Map<Character, String> candidates = generateCandidates();
@@ -91,7 +102,7 @@ public class VotingServiceImplTest extends VotingCountBaseTest {
             if (i == 0) {
                 preference = Util.of('A', 1,
                         'D', 2,
-                        'c', 3);
+                        'C', 3);
             } else if (i == 1) {
                 preference = Util.of('B', 1,
                         'D', 2,
@@ -103,12 +114,36 @@ public class VotingServiceImplTest extends VotingCountBaseTest {
 
         //First Round
         Result resultAfterFirstRound= votingService.countVotes();
-        System.out.println(resultAfterFirstRound);
         //Second round
         Result resultAfterSecondRound = votingService.countVotes();
-        System.out.println(resultAfterSecondRound);
         Assert.assertEquals(2, resultAfterSecondRound.getQuotaRequiredToWin());
-        Assert.assertEquals('D', resultAfterSecondRound.getWinner().getOption().charValue());
+        Character eliminatedCandidateAtSecondRound = ((Candidate)resultAfterSecondRound.getCandidatesEliminated().toArray()[0]).getOption();
+        Assert.assertTrue(eliminatedCandidateAtSecondRound.equals('A') || eliminatedCandidateAtSecondRound.equals('B'));
+        Result resultAfterThirdRound = votingService.countVotes();
+        Character eliminatedCandidateAtThirdRound = ((Candidate)resultAfterThirdRound.getCandidatesEliminated().toArray()[0]).getOption();
+        if (eliminatedCandidateAtSecondRound.equals('A')) {
+            Assert.assertTrue(eliminatedCandidateAtThirdRound.equals('B') || eliminatedCandidateAtThirdRound.equals('D'));
+        } else if (eliminatedCandidateAtSecondRound.equals('B')) {
+            Assert.assertTrue(eliminatedCandidateAtThirdRound.equals('A') || eliminatedCandidateAtThirdRound.equals('D'));
+        }
+
+        if (eliminatedCandidateAtThirdRound.equals('A') || eliminatedCandidateAtThirdRound.equals('B')) {
+            Assert.assertTrue(resultAfterThirdRound.getWinner().getOption().equals('D'));
+        } else {
+            Result resultAfterForthRound = votingService.countVotes();
+            Character eliminatedCandidateAtForthRound = ((Candidate)resultAfterForthRound.getCandidatesEliminated().toArray()[0]).getOption();
+            if (eliminatedCandidateAtSecondRound.equals('A')) {
+                Assert.assertTrue(eliminatedCandidateAtForthRound.equals('B') || eliminatedCandidateAtForthRound.equals('C'));
+            } else if (eliminatedCandidateAtSecondRound.equals('A')) {
+                Assert.assertTrue(eliminatedCandidateAtForthRound.equals('A') || eliminatedCandidateAtForthRound.equals('C'));
+            }
+
+            if (eliminatedCandidateAtForthRound.equals('B') || eliminatedCandidateAtForthRound.equals('A')) {
+                Assert.assertTrue(resultAfterForthRound.getWinner().getOption().equals('C'));
+            }
+
+        }
+
     }
 
     @After

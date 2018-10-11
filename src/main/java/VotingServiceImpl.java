@@ -72,7 +72,6 @@ public class VotingServiceImpl implements VotingService {
     }
 
     private Map<Character, Integer> getCurrentVoteCount() {
-        System.out.println(validBallots);
         Map<Character, Integer> voteCounts = validBallots
                 .entrySet()
                 .stream()
@@ -122,12 +121,22 @@ public class VotingServiceImpl implements VotingService {
                     .filter(voteCount -> voteCount.getValue().equals(minimumPreferenceValue.get()))
                     .map(this::getCandidateUsingVoteCount)
                     .collect(Collectors.toSet());
-            candidatesWithMinimumVotes.stream().forEach(candidatesWithMinimumVote -> {
-                reAllocateBallots(candidatesWithMinimumVote.getOption());
-            });
-            candidatesEliminated.addAll(candidatesWithMinimumVotes);
+
+            /**
+             * One candidate should be choosen at random
+             */
+            Candidate candidateForElimination;
+            if (candidatesWithMinimumVotes.size() > 1) {
+                int randomNumber = new Random().nextInt(candidatesWithMinimumVotes.size());
+                candidateForElimination = (Candidate) candidatesWithMinimumVotes.stream().toArray()[randomNumber];
+
+            } else {
+                candidateForElimination = candidatesWithMinimumVotes.stream().findFirst().get();
+            }
+            reAllocateBallots(candidateForElimination.getOption());
+            candidatesEliminated.add(candidateForElimination);
             candidatesEliminatedAtCurrentRound.clear();
-            candidatesEliminatedAtCurrentRound.addAll(candidatesWithMinimumVotes);
+            candidatesEliminatedAtCurrentRound.add(candidateForElimination);
         }
     }
 
