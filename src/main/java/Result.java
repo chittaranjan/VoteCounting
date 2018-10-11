@@ -2,17 +2,17 @@ import java.util.Map;
 import java.util.Set;
 
 public class Result {
-    private Set<Candidate> candidatesEliminated;
+    private Candidate candidateEliminated;
     private Candidate winner;
     private int quotaRequiredToWin;
     private Map<Character, Integer> currentVoteCount;
 
-    public Set<Candidate> getCandidatesEliminated() {
-        return candidatesEliminated;
+    public Candidate getCandidateEliminated() {
+        return candidateEliminated;
     }
 
-    public void setCandidatesEliminated(Set<Candidate> candidatesEliminated) {
-        this.candidatesEliminated = candidatesEliminated;
+    public void setCandidateEliminated(Candidate candidateEliminated) {
+        this.candidateEliminated = candidateEliminated;
     }
 
     public void setWinner(Candidate winner) {
@@ -42,7 +42,7 @@ public class Result {
     @Override
     public String toString() {
         return "Result{" +
-                "candidatesEliminated=" + candidatesEliminated +
+                "candidatesEliminated=" + candidateEliminated +
                 ", winner=" + winner +
                 ", quotaRequiredToWin=" + quotaRequiredToWin +
                 ", currentVoteCount=" + currentVoteCount +

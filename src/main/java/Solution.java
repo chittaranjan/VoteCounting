@@ -61,15 +61,11 @@ public class Solution {
                 for (Character optionToMap : options) {
                     preference.put(optionToMap, new Integer(++preferenceOrder));
                 }
-
                 Set<Candidate> candidateSet = new LinkedHashSet<>();
                 candidateSet.addAll(freshSetOfCandidates);
 
                 Ballot ballot = new Ballot(candidateSet);
-
                 ballot.setVotePreference(preference);
-
-
                 votingService.castVote(ballot);
             }
 
@@ -79,30 +75,30 @@ public class Solution {
         if (userEntry.equals("tally")) {
             int round = 1;
             Result result;
-
-
             do {
-                System.out.println("-------- Round " + round++ + "---------");
+                System.out.println("\n\n*************** Round " + round + "****************");
 
                 result = votingService.countVotes();
-                System.out.println(result);
-                System.out.println("Current vote count: " + result.getCurrentVoteCount());
+                System.out.println("---------------------------------------");
+                System.out.println("Current vote count: ");
+                System.out.println("---------------------------------------");
+                result.getCurrentVoteCount().entrySet().stream().forEach(voteCount -> {
+                    Candidate candidate = Candidate.getCandidateUsingOption(voteCount.getKey());
+                    System.out.println(candidate.getName() + ":" + voteCount.getValue());
+                });
+                System.out.println("---------------------------------------");
                 System.out.println("Quota required to win: "+ result.getQuotaRequiredToWin());
-                if (result.getWinner() == null) {
-                    System.out.println("Candidates eliminated:" + result.getCandidatesEliminated());
+                System.out.println("---------------------------------------");
+                if (result.getCandidateEliminated() != null) {
+                    System.out.println("Candidate eliminated:" + result.getCandidateEliminated().getName());
                 }
-
+                round++;
             } while (result.getWinner() == null);
 
-
-            System.out.println("Winner: " + result.getWinner().getOption());
+            System.out.println("---------------------------------------");
+            System.out.println("Winner: " + result.getWinner().getName());
         }
 
 
-    }
-
-    private static void printCommonResult(Result result) {
-        System.out.println("Current vote count: " + result.getCurrentVoteCount());
-        System.out.println("Quota required to win: "+ result.getQuotaRequiredToWin());
     }
 }

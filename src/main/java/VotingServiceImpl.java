@@ -12,7 +12,7 @@ public class VotingServiceImpl implements VotingService {
     private int currentQuota;
     private Character winnerOption;
     private boolean aWinnerIsDecided = false;
-    private Set<Candidate> candidatesEliminatedAtCurrentRound;
+    private Candidate candidatesEliminatedAtCurrentRound;
     private Set<Candidate> candidatesEliminated;
 
     private Map<Character, Integer> currentVoteCount;
@@ -20,7 +20,7 @@ public class VotingServiceImpl implements VotingService {
     public VotingServiceImpl() {
         validBallots = new HashMap<>();
         currentVoteCount = new HashMap<>();
-        candidatesEliminatedAtCurrentRound = new LinkedHashSet<>();
+        candidatesEliminatedAtCurrentRound = null;
         candidatesEliminated = new LinkedHashSet<>();
     }
 
@@ -62,7 +62,7 @@ public class VotingServiceImpl implements VotingService {
         Result resultAtThisRound = new Result();
         resultAtThisRound.setCurrentVoteCount(currentVoteCount);
         resultAtThisRound.setQuotaRequiredToWin(currentQuota);
-        resultAtThisRound.setCandidatesEliminated(candidatesEliminatedAtCurrentRound);
+        resultAtThisRound.setCandidateEliminated(candidatesEliminatedAtCurrentRound);
 
         aWinnerIsDecided = isThereAWinnerYet();
         if (aWinnerIsDecided) {
@@ -135,8 +135,7 @@ public class VotingServiceImpl implements VotingService {
             }
             reAllocateBallots(candidateForElimination.getOption());
             candidatesEliminated.add(candidateForElimination);
-            candidatesEliminatedAtCurrentRound.clear();
-            candidatesEliminatedAtCurrentRound.add(candidateForElimination);
+            candidatesEliminatedAtCurrentRound = candidateForElimination;
         }
     }
 
