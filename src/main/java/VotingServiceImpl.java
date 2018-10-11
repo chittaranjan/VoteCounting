@@ -79,6 +79,7 @@ public class VotingServiceImpl implements VotingService {
                 .collect(Collectors.toMap(Map.Entry::getKey, e-> e.getValue().size()));
         return voteCounts;
     }
+
     private boolean isThereAWinnerYet(){
         //Compute the vote counts
         Map<Character, Integer> voteCounts = getCurrentVoteCount();
@@ -86,25 +87,15 @@ public class VotingServiceImpl implements VotingService {
         currentVoteCount.putAll(voteCounts);
 
         //Check if there is a winner already
-        Set<Character> winners = voteCounts.entrySet()
+        Optional<Character> winner = voteCounts.entrySet()
                 .stream()
                 .filter(voteCount -> voteCount.getValue().intValue() >= currentQuota)
                 .map(voteCount -> voteCount.getKey())
-                .collect(Collectors.toSet());
+                .findAny();
 
-        if (winners != null && winners.isEmpty() == false) {
+        if (winner.isPresent()) {
             aWinnerIsDecided = true;
-            /**
-             * In case more than one candidate emerge out to be winner
-             * Need to select one randomly
-             */
-            if (winners.size() > 1) {
-                int randomNumber = new Random().nextInt(winners.size());
-                winnerOption = (Character) winners.stream().toArray()[randomNumber];
-
-            } else {
-                winnerOption = winners.stream().findFirst().get();
-            }
+            winnerOption = winner.get();
             return true;
         }
         return false;
@@ -124,7 +115,7 @@ public class VotingServiceImpl implements VotingService {
                     .collect(Collectors.toSet());
 
             /**
-             * One candidate should be choosen at random
+             * One candidate should be chosen at random
              */
             Candidate candidateForElimination;
             if (candidatesWithMinimumVotes.size() > 1) {
@@ -190,6 +181,7 @@ public class VotingServiceImpl implements VotingService {
             if (candidateWithHighestPreference.isPresent()) {
                 Candidate candidate = candidateWithHighestPreference.get();
 
+                //Compute validBallots by allocating ballots to candidates
                 validBallots.computeIfAbsent(candidate.getOption(), ballotList -> new ArrayList<>())
                         .add(ballot);
 
