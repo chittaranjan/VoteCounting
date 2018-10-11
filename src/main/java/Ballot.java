@@ -2,8 +2,7 @@ import java.util.*;
 
 public class Ballot {
     private Set<Candidate> candidates;
-    boolean isValid = true;
-    boolean isExhausted = false;
+    private boolean isValid = true;
 
     public Ballot(Set<Candidate> candidates) {
         this.candidates = new LinkedHashSet<>();
@@ -35,6 +34,7 @@ public class Ballot {
      * e.g. <A, 1>
      */
     public void setVotePreference(Map<Character, Integer> votePreference) {
+        //Look for duplicate entries
         if (!isValidPreferenceSet(votePreference.values())) {
             isValid = false;
         }
@@ -52,14 +52,6 @@ public class Ballot {
 
     public boolean isValid() {
         return isValid;
-    }
-
-    public boolean isExhausted() {
-        return isExhausted;
-    }
-
-    public void setExhausted(boolean exhausted) {
-        isExhausted = exhausted;
     }
 
     private boolean isValidPreferenceSet(Collection<Integer> preferenceValues) {
@@ -88,8 +80,7 @@ public class Ballot {
     public String toString() {
         return "Ballot{" +
                 "candidates=" + candidates +
-                //", isValid=" + isValid +
-                //", isExhausted=" + isExhausted +
+                ", isValid=" + isValid +
                 "}\n";
     }
 }

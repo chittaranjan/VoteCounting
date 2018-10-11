@@ -21,7 +21,7 @@ sourceSets {
 
     test {
         java {
-            srcDirs = ["src/test/java"]  // Note @Peter's comment below
+            srcDirs = ["src/test/java"] 
         }
     }
 }
@@ -36,7 +36,7 @@ jar {
 }
 
 
-task runJar(dependsOn:jar) << {
+task run(dependsOn:jar) << {
     javaexec {
         standardInput = System.in
         main="-jar";

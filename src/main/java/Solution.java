@@ -29,7 +29,10 @@ public class Solution {
             candidates.add(candidate);
         }
 
+        System.out.println("\n*************** Candidates to elect " + "******************");
         candidates.stream().forEach(candidate -> System.out.println(candidate.getOption() + ". " + candidate.getName()));
+        System.out.println("\n*********************************************************");
+        System.out.println("\nEnter your preference in order");
 
         Scanner in = new Scanner(System.in);
         String userEntry = null;
@@ -47,7 +50,19 @@ public class Solution {
             for (Candidate candidate : candidates) {
                 freshSetOfCandidates.add(candidate.clone());
             }
-            Set<String> uniqueVotes = new LinkedHashSet<String>(Arrays.asList(userVotes));
+            Set<Character> availableCandidateOptions = freshSetOfCandidates.stream().map(candidate -> candidate.getOption()).collect(Collectors.toSet());
+            Set<String> uniqueVotes = new LinkedHashSet<>();
+            Set<String> duplicateVotes = Arrays.stream(userVotes).filter(userVote -> !uniqueVotes.add(userVote)).collect(Collectors.toSet());
+            boolean invalidEntriesPresentInBallot = Arrays.stream(userVotes)
+                    .anyMatch(userVote -> !availableCandidateOptions.contains(userVote.charAt(0)));
+            if (invalidEntriesPresentInBallot) {
+                System.out.println("Informal ballot since unknown entries are present; so discarded");
+                continue;
+            }
+            if (!duplicateVotes.isEmpty()) {
+                System.out.println("Informal ballot since duplicate entries are present; so discarded");
+                continue;
+            }
             Set<Character> options = new LinkedHashSet<>(uniqueVotes.stream().map(vote -> vote.charAt(0)).collect(Collectors.toList()));
             Set<Character> availableOptions = freshSetOfCandidates.stream().map(candidate -> candidate.getOption()).collect(Collectors.toSet());
 

@@ -19,7 +19,7 @@ public class VotingServiceImpl implements VotingService {
 
     public VotingServiceImpl() {
         validBallots = new HashMap<>();
-        currentVoteCount = new HashMap<>();
+        currentVoteCount = new LinkedHashMap<>();
         candidatesEliminatedAtCurrentRound = null;
         candidatesEliminated = new LinkedHashSet<>();
     }
@@ -30,7 +30,6 @@ public class VotingServiceImpl implements VotingService {
             this.ballots = new ArrayList<>();
         }
         this.ballots.add(ballot);
-
     }
 
     @Override
