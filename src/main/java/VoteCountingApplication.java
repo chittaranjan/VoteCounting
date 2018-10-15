@@ -14,7 +14,10 @@ public class VoteCountingApplication {
     }
 
     public void registerCandidates(List<String> candidates) {
-        Set<String> uniqueCandidates = candidates.stream().collect(Collectors.toSet());
+        //Ignore duplicate entries and maintain order
+        Set<String> uniqueCandidates = new LinkedHashSet<>();
+        candidates.stream().distinct().forEach(candidate -> uniqueCandidates.add(candidate));
+
         char option = 'A';
         for (String candidateName : uniqueCandidates) {
             if (candidateName != null && candidateName.isEmpty() == false) {
