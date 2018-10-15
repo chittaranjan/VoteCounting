@@ -36,6 +36,7 @@ public class VotingServiceImpl implements VotingService {
 
     @Override
     public Result countVotes() {
+
         /**
          * Perform a round of counting unless a winner is determined.
          *

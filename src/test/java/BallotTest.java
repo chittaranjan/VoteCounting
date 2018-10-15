@@ -21,7 +21,7 @@ public class BallotTest {
     }
 
     @Test
-    public void validVotePreferenceTest() {
+    public void whenValidPreferencesAreSetBallotBecomesAValidBallot() {
         Set<Candidate> candidates = ballot.getCandidates();
         Map<Character, Integer> vote = new HashMap<>();
         int count = 1;
@@ -33,7 +33,7 @@ public class BallotTest {
     }
 
     @Test
-    public void preferenceNumberBeyondRangeInBallotTest() {
+    public void whenOutOfRangePreferenceIsSetBallotBecomesInvalid() {
         Set<Candidate> candidates = ballot.getCandidates();
         Map<Character, Integer> vote = new HashMap<>();
         vote.put('A', 6);
@@ -42,7 +42,7 @@ public class BallotTest {
     }
 
     @Test()
-    public void invalidCandidateOptionInBallotTest() {
+    public void whenPreferenceIsSetForANonExistingCandidateBallotBecomesInvalid() {
         Set<Candidate> candidates = ballot.getCandidates();
         Map<Character, Integer> vote = new HashMap<>();
         vote.put('F', 6);
@@ -51,7 +51,7 @@ public class BallotTest {
     }
 
     @Test
-    public void reOrderCandidatePreferenceTest() {
+    public void whenPreferencesInBallotAreReorderedCandidatesMustHaveNextHigherPreferenceOrPreferenceBecomesZero() {
         Set<Candidate> candidates = ballot.getCandidates();
         Map<Character, Integer> vote = new HashMap<>();
         vote.put('A', 1);

@@ -12,19 +12,6 @@ repositories {
     mavenCentral()
 }
 
-sourceSets {
-    main {
-        java {
-            srcDir 'src/main/java'
-        }
-    }
-
-    test {
-        java {
-            srcDirs = ["src/test/java"] 
-        }
-    }
-}
 
 jar {
     manifest {
@@ -34,7 +21,6 @@ jar {
         )
     }
 }
-
 
 task run(dependsOn:jar) << {
     javaexec {

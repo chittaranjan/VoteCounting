@@ -4,7 +4,7 @@
 public interface VotingService {
     /**
      * API to cast vote
-     * It ignores the ballot if found t be invalid
+     * It ignores the ballot if found to be invalid
      * @param ballot
      */
     void castVote(Ballot ballot);
