@@ -67,8 +67,13 @@ public class Candidate {
     @Override
     public String toString() {
         return "[" + this.option + " - "+
-                this. name+ "-" +
+                this. name+ " - " +
                 this.currentPreference +"]";
+    }
+
+    //For Testcase
+    public static void clearCache() {
+        optionToNameMap.clear();
     }
 
     public static Candidate getCandidateUsingOption(Character option) {
