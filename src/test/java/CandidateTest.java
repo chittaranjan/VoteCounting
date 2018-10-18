@@ -15,13 +15,13 @@ public class CandidateTest {
     }
 
     @Test
-    public void whenCandidateIsCloned() {
+    public void whenCandidateIsClonedItShouldBeEqualToTheOriginalCandidate() {
         Candidate candidate = new Candidate('A', "TestCandidate");
         Assert.assertTrue(candidate.equals(candidate.clone()));
     }
 
     @Test
-    public void whenCandidateIsGetUsingValidOption() {
+    public void whenCandidateIsGetUsingValidOptionItShouldBeSameAsTheOriginalCandidate() {
         Candidate candidate = new Candidate('A', "TestCandidate");
         Candidate candidateUsingOption = Candidate.getCandidateUsingOption('A');
         Assert.assertTrue(candidate.equals(candidateUsingOption));
@@ -45,7 +45,7 @@ public class CandidateTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenANonExistingCandidateIsRequestedGetCandidateUsingOptionShouldReturnNull() {
+    public void whenANonExistingCandidateIsRequestedGetCandidateUsingOptionShouldThrowIllegalArgumentException() {
         Candidate candidate1 = new Candidate('A', "TestCandidate");
         Candidate candidateUsingOptionB = Candidate.getCandidateUsingOption(new Character('B'));
     }

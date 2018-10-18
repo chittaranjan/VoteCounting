@@ -41,7 +41,7 @@ public class BallotTest {
         Assert.assertFalse(ballot.isValid());
     }
 
-    @Test()
+    @Test
     public void whenPreferenceIsSetForANonExistingCandidateBallotBecomesInvalid() {
         Set<Candidate> candidates = ballot.getCandidates();
         Map<Character, Integer> vote = new HashMap<>();
